@@ -7,66 +7,119 @@
 //                                pour rafraîchir le Dashboard (M5)
 // ============================================================
 
-import React, { useState } from 'react';
-import { createTicket } from '../api/tickets.js'; // Fonction API centralisée (M5)
+import React, { useState } from "react";
+import { createTicket } from "../api/tickets.js";
 
-// État initial du formulaire — réutilisé lors de la réinitialisation
 const initialForm = {
-  title:       '',
-  description: '',
-  location:    '',
-  category:    '',
-  priority:    'Moyenne', // Valeur par défaut
+  title: "",
+  description: "",
+  location: "",
+  category: "Informatique",
+  priority: "Moyenne",
 };
 
 function ReportIssueForm({ onTicketCreated }) {
-  // État des champs du formulaire
   const [formData, setFormData] = useState(initialForm);
-
-  // Message de retour (succès ou erreur) affiché à l'utilisateur
   const [message, setMessage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // TODO (M3) : Gérer la saisie dans les champs
-  // Astuce : une seule fonction handleChange pour tous les champs
+  // ✅ FIX 1 : handleChange
   const handleChange = (e) => {
-    // À compléter par M3
-    // setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  // TODO (M3) : Gérer la soumission du formulaire
+  // ✅ FIX 2 : submit complet
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page
+    e.preventDefault();
 
-    // TODO (M3) :
-    // 1. Vérifier que tous les champs requis sont remplis
-    // 2. Appeler createTicket(formData) depuis ../api/tickets.js
-    // 3. En cas de succès : afficher un message vert + réinitialiser le formulaire
-    // 4. Appeler onTicketCreated() pour rafraîchir le Dashboard
-    // 5. En cas d'erreur : afficher un message rouge
+    // validation simple
+    if (!formData.title || !formData.description || !formData.location) {
+      setMessage({ type: "error", text: "Tous les champs sont obligatoires" });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const newTicket = await createTicket(formData);
+
+      setMessage({ type: "success", text: "Incident créé avec succès" });
+
+      setFormData(initialForm);
+
+      // refresh dashboard
+      if (onTicketCreated) onTicketCreated(newTicket);
+    } catch (err) {
+      setMessage({ type: "error", text: err.message || 'Erreur réseau' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <section>
       <h2>📝 Déclarer un Incident</h2>
 
-      {/* Affichage du message de succès ou d'erreur */}
-      {message && (
-        <p style={{ color: message.type === 'success' ? 'green' : 'red' }}>
-          {message.text}
-        </p>
-      )}
+      <form onSubmit={handleSubmit} className="card">
+        {message && (
+          <div className={`message ${message.type === 'success' ? 'success' : 'error'}`}>
+            {message.text}
+          </div>
+        )}
 
-      {/* TODO (M3) : Construire le formulaire avec les champs suivants :
-          - title       (input text, requis)
-          - description (textarea, requis)
-          - location    (input text, requis)
-          - category    (select : Informatique | Plomberie | Electricite | Autre, requis)
-          - priority    (select : Basse | Moyenne | Haute)
-          - bouton Soumettre
-      */}
-      <form onSubmit={handleSubmit}>
-        <p>[ Formulaire à construire par M3 ]</p>
-        <button type="submit">Soumettre l'incident</button>
+        <label htmlFor="title">Titre *</label>
+        <input
+          id="title"
+          name="title"
+          placeholder="Titre"
+          value={formData.title}
+          onChange={handleChange}
+        />
+
+        <label htmlFor="description">Description *</label>
+        <textarea
+          id="description"
+          name="description"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleChange}
+        />
+
+        <label htmlFor="location">Localisation *</label>
+        <input
+          id="location"
+          name="location"
+          placeholder="Localisation"
+          value={formData.location}
+          onChange={handleChange}
+        />
+
+        <label htmlFor="category">Catégorie *</label>
+        <select id="category" name="category" value={formData.category} onChange={handleChange}>
+          <option value="Informatique">Informatique</option>
+          <option value="Plomberie">Plomberie</option>
+          <option value="Electricite">Electricite</option>
+          <option value="Autre">Autre</option>
+        </select>
+
+        <label htmlFor="priority">Priorité</label>
+        <select id="priority" name="priority" value={formData.priority} onChange={handleChange}>
+          <option value="Basse">Basse</option>
+          <option value="Moyenne">Moyenne</option>
+          <option value="Haute">Haute</option>
+        </select>
+
+        <div className="form-actions">
+          <button type="submit" className="btn-primary" disabled={isSubmitting}>
+            {isSubmitting ? <span className="spinner" aria-hidden></span> : (
+              <svg className="icon" width="16" height="16" viewBox="0 0 24 24" style={{ verticalAlign:'middle', marginRight:8 }} xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#fff" strokeWidth="0" fill="#fff"/></svg>
+            )}
+            {isSubmitting ? 'Envoi...' : 'Soumettre'}
+          </button>
+          <button type="button" className="btn-ghost" onClick={() => setFormData(initialForm)} disabled={isSubmitting}>Réinitialiser</button>
+        </div>
       </form>
     </section>
   );

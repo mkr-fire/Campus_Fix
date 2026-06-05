@@ -18,6 +18,7 @@ const ticketRoutes = require('./routes/tickets');
 
 // Importer le middleware de gestion d'erreurs (M2)
 const errorHandler = require('./middleware/errorHandler');
+const notFound = require('./middleware/notFound');
 
 // --- Connexion à la base de données ---
 connectDB();
@@ -43,6 +44,10 @@ app.use('/api/tickets', ticketRoutes);
 app.get('/', (req, res) => {
   res.json({ message: '✅ Campus Fix API opérationnelle !' });
 });
+
+// Middleware de gestion des erreurs (doit être en DERNIER)
+// Middleware pour route non trouvée (404)
+app.use(notFound);
 
 // Middleware de gestion des erreurs (doit être en DERNIER)
 app.use(errorHandler);

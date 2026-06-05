@@ -5,16 +5,25 @@
 
 const mongoose = require('mongoose');
 
+// Variable globale pour savoir si on utilise la base de données réelle ou en mémoire
+global.useMemoryDb = false;
+
 const connectDB = async () => {
   try {
-    // Connexion à MongoDB avec l'URI définie dans .env
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-
-    console.log(`✅ MongoDB connecté : ${conn.connection.host}`);
+    const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/campus_fix', {
+      serverSelectionTimeoutMS: 3000,
+    });
+    console.log(`[MongoDB] Connecté avec succès : ${conn.connection.host}`);
   } catch (error) {
-    // Si la connexion échoue, on affiche l'erreur et on arrête le serveur
-    console.error(`❌ Erreur de connexion MongoDB : ${error.message}`);
-    process.exit(1); // Code 1 = sortie avec erreur
+    console.warn('\n========================================================================');
+    console.warn('[ATTENTION] Impossible de se connecter à la base de données MongoDB.');
+    console.warn(`Détail de l'erreur : ${error.message}`);
+    console.warn('Campus Fix fonctionnera temporairement en MODE SIMULATION.');
+    console.warn('Les incidents seront stockés en mémoire vive (perdus après redémarrage).');
+    console.warn('========================================================================\n');
+    
+    // Activer le mode simulation
+    global.useMemoryDb = true;
   }
 };
 
