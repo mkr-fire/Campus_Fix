@@ -1,0 +1,13 @@
+# Dépendances Node — ne pas commiter (trop lourd)
+node_modules/
+
+# Variables d'environnement — CONFIDENTIEL (mots de passe, URI DB)
+.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Système
+.DS_Store
+Thumbs.db
