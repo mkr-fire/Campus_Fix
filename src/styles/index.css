@@ -1,65 +1,79 @@
 /* ============================================================
-   src/styles/index.css — Styles globaux de Campus Fix
+   src/styles/index.css — Styles globaux de Campus Fix (palette verte douce)
    ============================================================ */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Thème principal */
+:root{
+  --brand-500: #2f855a; /* vert doux */
+  --brand-700: #22543d; /* vert foncé pour titres */
+  --muted: #52606a; /* gris doux */
+  --bg: #f6fffa; /* très léger vert/menthe pour le fond */
+  --card: #ffffff; /* cartes blanches pour contraste */
+  --success: #16a34a;
+  --danger: #dc2626;
+  --accent: #4ade80;
 }
 
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background-color: #f4f6f9;
-  color: #333;
+  background-color: var(--bg);
+  color: #0f1724;
   line-height: 1.6;
 }
 
-h1 {
-  color: #1b5fa8;
-  font-size: 2rem;
-}
+h1 { color: var(--brand-700); font-size: 2rem; }
+h2 { color: var(--brand-500); font-size: 1.4rem; margin-bottom: 16px; }
 
-h2 {
-  color: #2e75b6;
-  font-size: 1.4rem;
-  margin-bottom: 16px;
-}
-
-hr {
-  border: none;
-  border-top: 2px solid #dde3ef;
-}
+hr { border: none; border-top: 2px solid rgba(34,84,61,0.06); }
 
 button {
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: opacity 0.2s;
+  cursor: pointer; border: none; border-radius: 8px; padding: 8px 16px;
+  font-size: 0.95rem; font-weight: 600; transition: transform 160ms, opacity 120ms;
 }
+button:hover{ transform: translateY(-2px); opacity: 0.95; }
 
-button:hover {
-  opacity: 0.85;
-}
+/* Card */
+.card { background: var(--card); box-shadow: 0 8px 24px rgba(16,24,32,0.06); border-radius: 12px; padding: 16px; }
+.card:hover{ transform: translateY(-4px); transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms; }
 
-/* Couleurs de statut — utilisées dans TicketCard (M4) */
-.status-nouveau {
-  background-color: #fdecea;
-  color: #c0392b;
-  border-left: 4px solid #e74c3c;
+/* Form styles */
+form input[type="text"], form textarea, form select {
+  width: 100%; padding: 10px 12px; border: 1px solid rgba(16,24,32,0.06); border-radius: 8px;
+  margin-top: 6px; margin-bottom: 12px; background: #fff;
 }
+form label{ display:block; font-size:0.9rem; color:var(--muted); }
+.form-actions{ display:flex; gap:12px; align-items:center; }
+.btn-primary{ background:var(--brand-500); color:white; border-radius:8px; padding:8px 14px; }
+.btn-ghost{ background:transparent; color:var(--brand-700); border:1px solid rgba(16,24,32,0.06); }
+.btn-primary[disabled], .btn-ghost[disabled]{ opacity:0.6; cursor:not-allowed; }
 
-.status-en-cours {
-  background-color: #fef5e7;
-  color: #d35400;
-  border-left: 4px solid #e67e22;
-}
+/* Spinner */
+.spinner{ display:inline-block; width:18px; height:18px; border-radius:50%; border:2px solid rgba(0,0,0,0.06); border-top-color:var(--brand-500); animation: spin 900ms linear infinite; }
+@keyframes spin{ to{ transform: rotate(360deg); } }
 
-.status-resolu {
-  background-color: #eafaf1;
-  color: #1e8449;
-  border-left: 4px solid #27ae60;
-}
+/* Messages */
+.message { padding:8px 12px; border-radius:8px; margin-bottom:12px; }
+.message.success{ background: #eefdf3; color: var(--success); border:1px solid rgba(34,84,61,0.06); }
+.message.error{ background:#fff5f5; color:var(--danger); border:1px solid rgba(220,38,38,0.08); }
+
+/* Ticket list */
+.ticket-list{ display:flex; flex-direction:column; gap:12px; }
+
+/* Badges */
+.status-badge{ padding:6px 10px; border-radius:999px; font-weight:600; font-size:0.85rem; }
+.badge-nouveau{ background:#fee2e2; color:#991b1b; }
+.badge-en-cours{ background:#fed7aa; color:#92400e; }
+.badge-resolu{ background:#dcfce7; color:#166534; }
+
+/* Small icon helpers */
+.icon{ width:18px; height:18px; display:inline-block; vertical-align:middle; margin-right:8px; }
+
+@media (max-width:720px){ .card{ padding:12px; } }
+
+/* Status blocks */
+.status-nouveau { background-color: #fee2e2; color: #991b1b; border-left: 4px solid #dc2626; }
+.status-en-cours { background-color: #fed7aa; color: #92400e; border-left: 4px solid #f97316; }
+.status-resolu { background-color: #dcfce7; color: #166534; border-left: 4px solid #16a34a; }
+
