@@ -17,8 +17,8 @@ function TicketFilter({ filters, onFilterChange }) {
 
   // TODO (M4) : Gérer le changement d'un filtre
   const handleChange = (e) => {
-    // À compléter par M4 :
-    // onFilterChange(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    onFilterChange(prev => ({ ...prev, [name]: value }));
   };
 
   return (

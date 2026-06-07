@@ -27,7 +27,7 @@ function App() {
 
       {/* En-tête */}
       <header style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <h1>🏫 Campus Fix</h1>
+        <h1> Campus Fix</h1>
         <p>Plateforme de signalement d'incidents — Université de Maroua</p>
       </header>
 
