@@ -8,6 +8,20 @@ const mongoose = require('mongoose');
 // Définition du schéma (structure d'un document Ticket en base)
 const ticketSchema = new mongoose.Schema({
 
+  // Identite facultative du declarant invite
+  reporterName: {
+    type: String,
+    trim: true,
+    default: 'Invite',
+  },
+
+  // Moyen de contact facultatif pour relancer le declarant
+  reporterContact: {
+    type: String,
+    trim: true,
+    default: 'Non renseigne',
+  },
+
   // Titre court de l'incident (obligatoire)
   title: {
     type: String,
